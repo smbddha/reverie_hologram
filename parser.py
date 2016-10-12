@@ -2,11 +2,38 @@
 
 import re, sys, os
 
-def parse(filename):
+def parse():
 
-	pattern = "\b(\d+)\b"
+	Data = [] 
+
+	filename = "Test Tracking Data 1.txt"
+
+	if not os.path.isfile(filename):
+		print "[x] File does not exist\n"	
+		
+	fp = open(filename)
+
+	line = fp.readline()
+
+	while line.strip() != "Position":
+		line = fp.readline()
+
+	header = fp.readline().strip().split('\t')
 	
-	if os.path.isfile(filename):
-		for line in open(filename):
+	line = fp.readline()
 
-			re.findall(pattern, line)
+	while line.split():
+		line = line.strip().split()
+		
+		try:
+			Data.append({'x': line[1], 'y': line[2], 'z': line[3]})
+		except IndexError:
+			print line
+
+
+		line = fp.readline()
+	
+	return Data
+
+if __name__ == "__main__":
+		parse()
