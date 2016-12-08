@@ -1,15 +1,19 @@
 # Optimization File
 import numpy as np
 from scipy import stats
+
 # Version A
     # Step 1: take in Parser output array values
-testinput = np.array([[24,213,110],[154,24,223],[87,43,201],[215,87,4],[32,127,3],[86,23,200],[14,85,135],[154,24,223],[87,43,201],[87,43,201],[215,87,4],
-[86,23,200],[14,85,135],[154,24,223],[87,43,201],[87,43,201],[215,87,4]])
+from parser import parse
+Data = parse()
+
+# testinput = np.array([[24,213,110],[154,24,223],[87,43,201],[215,87,4],[32,127,3],[86,23,200],[14,85,135],[154,24,223],[87,43,201],[87,43,201],[215,87,4],
+# [86,23,200],[14,85,135],[154,24,223],[87,43,201],[87,43,201],[215,87,4]])
 
 # Part 1: X - Y Values
     # Step 2: create a new Array
 pixelated = np.array([[]])
-inputlength = len(testinput)
+inputlength = len(Data)
 indexarray = np.array([])
 xvals = np.array([])
 xvalmean = np.array([])
@@ -25,7 +29,7 @@ for i in range(0, inputlength):
 indexarray = np.flipud(indexarray)
 indexarray = indexarray.astype(int)
     # Step 4: add x and y values to Array
-pixelated = np.insert(testinput, 0, indexarray, axis=1)
+pixelated = np.insert(Data, 0, indexarray, axis=1)
 
 
 # Part 2: Pallet (Four Cameras)
@@ -83,4 +87,4 @@ pixelated = np.insert(pixelated, 15, fiveadv, axis=1)
 pixelated = np.insert(pixelated, 16, tenadv, axis=1)
 pixelated = np.insert(pixelated, 17, fifteenadv, axis=1)
 
-print pixelated
+np.savetxt("pixels.xml", pixelated, delimiter=",")

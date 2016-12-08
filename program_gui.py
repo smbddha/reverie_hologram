@@ -3,8 +3,14 @@ from Tkinter import *
 from ttk import *
 import Tkconstants, tkFileDialog
 import csv
+import json
 
+data = None
 
+class Foo(object):
+    pass
+
+myobject = Foo()
 
 class App(Frame):
     def __init__(self, master=None):
@@ -16,38 +22,20 @@ class App(Frame):
         button_opt = {'fill': Tkconstants.BOTH, 'padx': 5, 'pady': 5}
 
         # define buttons
-        Tkinter.Button(self, text='Open File', command=self.askopenfile).pack(**button_opt)
+        # Tkinter.Button(self, text='Open File', command=self.askopenfile).pack(**button_opt)
         Tkinter.Button(self, text='Open Filename', command=self.askopenfilename).pack(**button_opt)
-        Tkinter.Button(self, text='Save File', command=self.asksaveasfile).pack(**button_opt)
-        Tkinter.Button(self, text='Save Filename', command=self.asksaveasfilename).pack(**button_opt)
+        # Tkinter.Button(self, text='Save File', command=self.asksaveasfile).pack(**button_opt)
+        # Tkinter.Button(self, text='Save Filename', command=self.asksaveasfilename).pack(**button_opt)
 
         # define options for opening or saving a file
         self.file_opt = options = {}
         options['defaultextension'] = '.txt'
-        options['filetypes'] = [('all files', '.*'), ('text files', '.txt')]
-        options['initialdir'] = 'C:\\'
+        options['filetypes'] = [('all files', '.*'), ('text files', '.mp4'), ('text files', '.mov')]
+        # options['initialdir'] = 'C:\\'
         options['initialfile'] = 'reverie_settings.txt'
         options['parent'] = root
         options['title'] = 'This is a title'
 
-        # This is only available on the Macintosh, and only when Navigation Services are installed.
-        #options['message'] = 'message'
-
-        # if you use the multiple file version of the module functions this option is set automatically.
-        #options['multiple'] = 1
-
-        # defining options for opening a directory
-        self.dir_opt = options = {}
-        options['initialdir'] = 'C:\\'
-        options['mustexist'] = False
-        options['parent'] = root
-        options['title'] = 'This is a title'
-
-    def askopenfile(self):
-
-        """Returns an opened file in read mode."""
-
-        return tkFileDialog.askopenfile(mode='r', **self.file_opt)
 
     def askopenfilename(self):
 
@@ -60,13 +48,11 @@ class App(Frame):
 
         # open file on your own
         if filename:
+          fileroot = filename
+          print(fileroot)
           return open(filename, 'r')
 
-    def asksaveasfile(self):
 
-        """Returns an opened file in write mode."""
-
-        return tkFileDialog.asksaveasfile(mode='w', **self.file_opt)
 
     def asksaveasfilename(self):
 
@@ -103,13 +89,35 @@ class App(Frame):
             w.writerow([self.IP.get()])
             w.writerow([self.palatte.get()])
             w.writerow([self.w.get()])
+            myobject.IP = self.IP.get()
+            myobject.palatte = self.IP.get()
+            myobject.w = self.w.get()
+            data={'IP': self.IP.get(), 'name': self.palatte.get()}
+            # with open('my_json.txt', 'w') as fp:
+            #     json.dump(data, fp)
+
+    def asksaveasfile(self):
+
+        """Returns an opened file in write mode."""
+
+        data={'IP': self.IP.get(), 'name': self.palatte.get()}
+        with open('my_json.txt', 'w') as fp:
+            json.dump(data, fp)
+
+        return tkFileDialog.asksaveasfile(mode='w', **self.file_opt)
+
+# example dictionary that contains data like you want to have in json
+
+
+# get json string from that dictionary
+
 
 
 
 
 if __name__ == "__main__":
     root=Tk()
-    root.configure(background='orange')
+    root.configure(background='grey')
     root.title('Reverie Program 1')
     root.geometry('1000x1000')
     app=App(master=root)
