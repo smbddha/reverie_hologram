@@ -87,4 +87,5 @@ pixelated = np.insert(pixelated, 15, fiveadv, axis=1)
 pixelated = np.insert(pixelated, 16, tenadv, axis=1)
 pixelated = np.insert(pixelated, 17, fifteenadv, axis=1)
 
+    # Step 9: Export Pixel Array as an XML File
 np.savetxt("pixels.xml", pixelated, delimiter=",")
