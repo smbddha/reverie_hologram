@@ -19,60 +19,70 @@ from shutil import copyfile, rmtree
 
 OP_SYSTEM = sys.platform
 
-fpath = '../Template Comp.mov'
-outputDestination = '../output/'
-scriptDestination = '/Support Files/Scripts/Startup/ReverieScript.jsx'
+footagePath = '../../Template Comp.mov'
+outputDestination = '../../output/'
+scriptDestination = '/Support Files/Scripts/Startup/ReverieScript.jsx' if OP_SYSTEM == 'win32' else ''
+AEPATH = '/Support Files/AfterFX.exe' if OP_SYSTEM == 'win32' else ''
 rootAdobePath = 'c:/Program Files/Adobe/' if OP_SYSTEM == 'win32' else '/Applications/Adobe/'
 
+
 def main():
-    convert(fpath)
-    copyfile("ReverieScript.jsx", rootAdobePath + scriptPath)
-    aeprocess = subprocess.Popen([aePath])
+    convert(footagePath)
+
+    AfterEffects = getAfterEffectsPath()
+
+    if not AfterEffects:
+        print "[-] Adobe After Effects not found"
+        print "[-] Please install Adobe After Effects"
+        sys.exit(1)
+
+    copyfile("ReverieScript.jsx", AfterEffects + scriptDestination)
+    aeprocess = subprocess.Popen([AfterEffects + AEPATH])
 
 
+"""
+Finds the Adobe After Effects directory
+and returns its whole path
+this method will work for all versions
+"""
 def getAfterEffectsPath():
 
-    pattern = re.compile("After Effects")
+    pattern = re.compile('After Effects')
 
-    for subdir in [d for d in os.listdir(rootAdobePath) if os.path.isdir(rootAdobePath + f)]:
-        if pattern.search(d):
-            print "[+] Found After Effects at {}".format(rootAdobePath + d)
-            return rootAdobePath + d
+    for subdir in [d for d in os.listdir(rootAdobePath) if os.path.isdir(rootAdobePath + d)]:
+        if pattern.search(subdir):
+            #print "[+] Found After Effects at {}".format(rootAdobePath + subdir)
+            return rootAdobePath + subdir
 
     print "[-] Adobe After Effects not found"
-    return
+    return None
 
 
+"""
+Converts the original footage to a png image sequence
+and outputs the sequence to /output directory in
+the current working directory
+"""
 def convert(infile):
-    os.mkdir(dest)
+    os.mkdir(outputDestination)
     ff = ffmpy.FFmpeg(
 	inputs={infile: None},
-	outputs={dest + 'image-%03d.png':None}
+	outputs={outputDestination + 'image-%03d.png':None}
     )
 
     print "[+] Converting footage to a png image sequence"
     ff.run()
 
+"""
+Removes the previously generated image sequence
+"""
 def cleanup():
     try:
-        rmtree(dest)
+        rmtree(outputDestination)
     except:
-	print "[-] Error deleting image sequence"
+	    print "[-] Error deleting image sequence"
 
 
 if __name__ == '__main__':
 	main()
 
-"""
-scriptPath = "c:/Program Files/Adobe/Adobe After Effects CC 2017/Support Files/Scripts/Startup/ReverieScript.jsx"
-
-print "[+] Writing script to startup folder"
-copyfile("ReverieScript.jsx", scriptPath)
-
-aePath = "c:/Program Files/Adobe/Adobe After Effects CC 2017/Support Files/AfterFX.exe"
-
-print "Opening After Effects"
-#aeprocess = subprocess.Popen([aePath, "&&"])
-
-print "After Effects opened"
-"""
